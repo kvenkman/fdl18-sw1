@@ -88,8 +88,8 @@ def PolaRxS_batchDataDownloadToLocal(input_datetime):
 		print(filename_save)
 		sys.exit('We have data for this doy')
 
-	for h in range(0,1): 
-	#for h in range(0,24):
+	#for h in range(0,1): 
+	for h in range(0,24):
 	
 		print('this date = {0}'.format(thisdatetime))
 
