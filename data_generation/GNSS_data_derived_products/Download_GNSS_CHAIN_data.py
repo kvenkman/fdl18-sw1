@@ -7,8 +7,8 @@
 #*** How to run the script ****
 
 #Define 'datetime_start' and 'input_datetimes' in the main fucntion and run the 
-#script as: "python Download_GNSS_CHAIN_data.py number_of_days". 
-#Fill number_of_days with the total number of days you would like to download data.
+#script as: "python Download_GNSS_CHAIN_data.py numprocessors". 
+#Fill numprocessors with number of processors (the script is parallelized to make use of multi processors).
 
 #Please create your own account in chain.physics.unb.ca with your own email before running this script.
 
