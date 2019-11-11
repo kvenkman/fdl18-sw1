@@ -180,7 +180,7 @@ def main():
 	print('numprocessors = {0}'.format(numprocessors))
 	
 	pool = multiprocessing.Pool(numprocessors)
-	datetime_start = datetime.datetime(2014,1,1)
+	datetime_start = datetime.datetime(2017,1,1)
 	input_datetimes = [ (datetime_start + datetime.timedelta(days=d)) for d in (range(2)) ]
 	pool.map(PolaRxS_batchDataDownloadToLocal,input_datetimes) 
 
