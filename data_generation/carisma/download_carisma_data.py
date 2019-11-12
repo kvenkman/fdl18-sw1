@@ -1,94 +1,68 @@
 # -*- coding: utf-8 -*-
-"""
+'''
 Created on Sun Nov 10 22:56:48 2018
 
 @author: kvenkman
 
 Download CARISMA data
 
-Requires Python 3.4+
-"""
+Requires Python 3.4+, Unix based system for wget
 
+'''
 from pathlib import Path
 import os
-import numpy as np
-import threading
-import wget
 from calendar import monthrange
 
-pwd = os.getcwd()
+def download_carisma_data(year, station_name):
 
-def create_carisma_dirstruct():
+    # CARISMA data available here
+    carisma_data_url = 'http://data.carisma.ca/FGM/1Hz/'
+    
     # This will return '../fdl18-sw1' as the path
     root_folder = Path(os.getcwd()).parent.parent 
     
+    # Setting up directory structure
+    data_root = os.path.join(root_folder, 'data')
+    l1_data = os.path.join(data_root, 'level1')
+    this_year_folder = os.path.join(l1_data, str(year))
+
+    if not os.path.exists(data_root):
+        os.mkdir(data_root)
+        
+    if not os.path.exists(l1_data):
+        os.mkdir(l1_data)
     
-    years = 2015 + np.arange(3)
-    months = 1 + np.arange(12)
-    stations = ['talo', 'sach', 'fsim', 'fsmh',
-                'rabb', 'mcmu', 'mstk', 'rank',
-                'eskj', 'echu', 'gill']
+    if not os.path.exists(this_year_folder):
+        os.mkdir(this_year_folder)
+    
+    months = range(1, 13)
 
-    for year in years:
-        try:
-            os.mkdir(os.path.join(base_path,str(year)))
-        except:
-            print("Error")
-        for month in months:
-            month_str = str(month)
-            month_str = '0'+ month_str if (len(month_str) < 2) else month_str
-
-            try:
-                os.mkdir(os.path.join(base_path+str(year), month_str))
-                print(year, month)
-            except:
-                print("Error: Folder exists")         
-
-# Don't have to call if dir structure exists
-# create_carisma_dirstruct()   
-
-years = 2015 + np.arange(3)
-months = 1 + np.arange(12)
-
-#years = [2017] # 2015 + np.arange(3)
-#months = 8 + np.arange(5) # 1 + np.arange(12)
-
-stations = ['talo', 'sach', 'fsim', 'fsmh',
-            'rabb', 'mcmu', 'mstk', 'rank',
-            'eskj', 'echu', 'gill']
-
-base_url = 'http://data.carisma.ca/FGM/1Hz/'
-
-if(os.name == 'nt'):
-    base_path = "C:\\Users\\karth\\Desktop\\carisma\\level1\\"
-else:
-    base_path = "/data/NASAFDL2018/SpaceWeather/Team2-Ryan/carisma/level1/"
-
-for year in years:
     for month in months:
-        month_str = str(month)
-        month_str = '0'+ month_str if (len(month_str) < 2) else month_str
+        month_str = str(month).zfill(2) # Left pad with zeros
 
         days = monthrange(year, month)
-        days = days[1]
+        days = days[1] # Month range returns first weekday, and ndays(month)stat
         
-        os.chdir(os.path.join(base_path+str(year), month_str))
+        data_output_path = os.path.join(l1_data, str(year), month_str)
         
-        for day in np.arange(1, days + 1):
-            for station in stations:
-                day_str = str(day)
-                day_str = '0'+ day_str if (len(day_str) < 2) else day_str
-    
-                fetch_url=base_url+str(year)+'/'+ \
-                    month_str+'/'+day_str+'/'+ \
-                    str(year)+month_str+day_str+ \
-                    station.upper()+'.F01.gz'
-                
-                try:
-                    file = wget.download(fetch_url)
-                    print("Success!: ", fetch_url)
-                    
-                except:
-                    print("Error: ",fetch_url)
- 
+        if not os.path.exists(data_output_path):
+            os.mkdir(data_output_path)
+        
+        for day in range(1, days + 1):
+            day_str = str(day).zfill(2) # Left pad with zeros                
+            this_filename = str(year) + month_str + day_str + station_name.upper() + \
+                            '.F01.gz'
 
+            fetch_url = carisma_data_url + str(year) + '/' + \
+                        month_str + '/' + day_str + '/' + this_filename
+
+            check = os.system("wget -q " + fetch_url + " " + os.path.join(data_output_path, this_filename))
+            
+            # Check = 0 for successful download
+            if not check:
+                success_count += 1
+                os.system("gunzip -qf " + this_filename)
+            else:
+                error_count += 1
+                
+    print("Attempted downloads: {}, Successful downloads: {}.".format(error_count + success_count, success_count))
