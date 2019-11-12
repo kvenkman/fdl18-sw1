@@ -30,10 +30,10 @@ fdl18-sw1 (root folder)
 |     ---- carisma
 |          | 
 |          ---- level1
-|               | 
-|               ---- (years)
-|                    | 
-|                    ---- (months)
+|          |    | 
+|          |    ---- (years)
+|          |         | 
+|          |         ---- (months)
 |          | 
 |          ---- level2
 |          | 
