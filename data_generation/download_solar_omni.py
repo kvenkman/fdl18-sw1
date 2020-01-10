@@ -253,7 +253,7 @@ def main():
             with open(Path.cwd().joinpath('failed_omni_download_files.txt'), 'a') as outfile:
 
                 writer = csv.writer(outfile)
-                writer.writerow(str(data_to_write))
+                writer.writerow(data_to_write)
 
 if __name__ == '__main__':
     main()
